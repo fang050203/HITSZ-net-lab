@@ -10,9 +10,21 @@
 typedef enum net_protocol {
     NET_PROTOCOL_ARP = 0x0806,
     NET_PROTOCOL_IP = 0x0800,
+#ifdef ICMP
     NET_PROTOCOL_ICMP = 1,
+#else
+    NET_PROTOCOL_ICMP = 0xff,
+#endif
+#ifdef UDP
     NET_PROTOCOL_UDP = 17,
+#else
+    NET_PROTOCOL_UDP = 0xff,
+#endif
+#ifdef TCP
     NET_PROTOCOL_TCP = 6,
+#else
+    NET_PROTOCOL_TCP = 0xff,
+#endif
 } net_protocol_t;
 
 typedef void (*net_handler_t)(buf_t *buf, uint8_t *src);

@@ -115,7 +115,7 @@ add_executable(ip_frag_test
     ${EXTRA_FILE}
 )
 target_link_libraries(ip_frag_test ${PCAP})
-target_compile_definitions(ip_frag_test PUBLIC TEST ICMP UDP)
+target_compile_definitions(ip_frag_test PUBLIC TEST ICMP UDP TCP)
 
 add_executable(icmp_test
     testing/icmp_test.c
