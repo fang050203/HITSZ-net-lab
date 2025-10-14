@@ -15,8 +15,8 @@ int buf_init(buf_t *buf, size_t len) {
         return -1;
     }
 
-    buf->len = len;
-    buf->data = buf->payload + BUF_MAX_LEN / 2 - len;
+    buf->len = len;//设置有效数据长度
+    buf->data = buf->payload + BUF_MAX_LEN / 2 - len;//设置数据起始地址为payload空间长度一半
     return 0;
 }
 

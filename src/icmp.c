@@ -32,6 +32,7 @@ void icmp_in(buf_t *buf, uint8_t *src_ip) {
  */
 void icmp_unreachable(buf_t *recv_buf, uint8_t *src_ip, icmp_code_t code) {
     // TO-DO
+    return ICMP_CODE_PORT_UNREACH;
 }
 
 /**
