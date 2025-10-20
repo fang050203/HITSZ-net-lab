@@ -111,4 +111,41 @@ typedef struct peso_hdr {
  */
 uint16_t transport_checksum(uint8_t protocol, buf_t *buf, uint8_t *src_ip, uint8_t *dst_ip) {
     // TO-DO
+    uint16_t length = buf->len;
+
+    // 若长度为奇数，补一个字节对齐
+    int has_padding = length % 2;
+    if (has_padding)
+        buf_add_padding(buf, 1);
+
+    // 添加伪首部
+    buf_add_header(buf, sizeof(peso_hdr_t));
+
+    // 暂存被伪首部覆盖的内容（以便稍后恢复）
+    uint8_t backup[sizeof(peso_hdr_t)];
+    memcpy(backup, buf->data, sizeof(peso_hdr_t));
+
+    // 填充伪首部字段
+    peso_hdr_t *pseudo_hdr = (peso_hdr_t *)buf->data;
+    memcpy(pseudo_hdr->src_ip, src_ip, NET_IP_LEN);
+    memcpy(pseudo_hdr->dst_ip, dst_ip, NET_IP_LEN);
+    pseudo_hdr->placeholder = 0;
+    pseudo_hdr->protocol = protocol;
+    pseudo_hdr->total_len16 = swap16(length);  // 注意转换为网络字节序
+
+    // 计算校验和
+    uint16_t checksum = checksum16((uint16_t *)buf->data, buf->len);
+
+    // 恢复被伪首部覆盖的数据
+    memcpy(buf->data, backup, sizeof(peso_hdr_t));
+
+    // 移除伪首部
+    buf_remove_header(buf, sizeof(peso_hdr_t));
+
+    // 移除补齐字节
+    if (has_padding)
+        buf_remove_padding(buf, 1);
+
+    return checksum;
+
 }
